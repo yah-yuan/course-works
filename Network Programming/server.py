@@ -1,4 +1,5 @@
 import socket
+import time
 
 def server():
     port = ('127.0.0.1',33333)
@@ -14,6 +15,19 @@ def Connection(con):
         recv = con.recv(65535)
         if recv == b'':
             print('Remote closed')
+            break
+        elif b'hello syn' in recv:
+            print(recv.decode('utf8'))
+            con.send(b'ack syn')
+        elif b'fin' in recv:
+            print(recv.decode('utf8'))
+            con.send(b'ack')
+            con.send(b'fin')
+        elif b'hello ack' in recv:
+            print(recv.decode('utf8'))
+        elif b'ack' in recv:
+            print(recv.decode('utf8'))
+            con.close()
             break
         else:
             print(recv.decode('utf8'))
