@@ -21,8 +21,8 @@ def carry_around_add(a, b):
 
 def checksum(msg):
     '''计算包的校验和'''
-    if len(msg) % 2 != 0:  #补全
-        msg += '\0'
+    if len(msg) % 2:  #补全
+        msg += b'\0'
     s = 0
     for i in range(0, len(msg), 2):
         w = ((msg[i] << 8) & 0xffff) + (msg[i + 1] & 0xff)
@@ -31,7 +31,7 @@ def checksum(msg):
     return cksum
 
 
-def icmp_pack(type, sequence):
+def icmp_pack(type,id, sequence,data):
     '''type = 0     回显包
        type = 8     请求包
     '''
@@ -39,44 +39,49 @@ def icmp_pack(type, sequence):
     icmp_code = 0
     icmp_cksum = 0
 
-    icmp_id = os.getpid()
+    icmp_id = id
     icmp_seq = sequence
-    icmp_data = b'PING'
+    icmp_data = data
+    if not isinstance(data,bytes):
+        icmp_data = data.encode('utf8')
 
     # 按上面描述的结构，构建icmp header
     # !代表网络字节序
-    icmp_pack = pack('!BBHHH4s', icmp_type, icmp_code, icmp_cksum, icmp_id,
+    pattern = '!BBHHH'+str(len(icmp_data))+'s'
+    icmp_packet = pack(pattern, icmp_type, icmp_code, icmp_cksum, icmp_id,
                      icmp_seq, icmp_data)
 
-    icmp_cksum = checksum(icmp_pack)
+    icmp_cksum = checksum(icmp_packet)
 
-    icmp_pack = pack('!BBHHH4s', icmp_type, icmp_code, icmp_cksum, icmp_id,
+    icmp_packet = pack(pattern, icmp_type, icmp_code, icmp_cksum, icmp_id,
                      icmp_seq, icmp_data)
     # 最终的 icmp packet
-    return icmp_pack
+    return icmp_packet
 
 
 def icmp_unpack(raw_pack):
     '''解包,返回一个{字段:数据}的字典'''
-    raw_pack = raw_pack[20:32]
-    msg = unpack('!BBHHH4s', raw_pack)
+    # 解析icmp包的长度
+    ip_pack = (raw_pack[0:4])
+    ip_pack = unpack('!BBH',ip_pack)
+    ip_length = ip_pack[2]
+    icmp_length = ip_length - 20
+    # 截取icmp报文
+    raw_pack = raw_pack[20:20+icmp_length]
+    msg = unpack('!BBHHH'+str(icmp_length-8)+'s', raw_pack)
     msg_dic = {
         'type': msg[0],
-        'code': msg[1],
+        'code': msg[1], 
         'cksum': msg[2],
         'id': msg[3],
         'seq': msg[4],
         'data': msg[5]
     }
     # 测试cksum正确性
-    check_pack = pack('!BBHHH4s', msg_dic['type'], msg_dic['code'], 0,
+    check_pack = pack('!BBHHH'+str(icmp_length-8)+'s', msg_dic['type'], msg_dic['code'], 0,
                       msg_dic['id'], msg_dic['seq'], msg_dic['data'])
     if checksum(check_pack) == msg_dic['cksum']:
-        msg_dic['data'] = msg_dic['data'].decode('utf8')
+        msg_dic['data'] = msg_dic['data']
         return msg_dic
     else:
         print('cksum error')
-
-
-if __name__ == '__main__':
-    icmp_pack(8, 0)

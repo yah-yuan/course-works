@@ -6,6 +6,10 @@ ping程序的request程序
 这是ping程序的Request程序
 主要逻辑有请求包发送和回显包解析两个部分
 icmp包的构造和解析包含在ping_icmp.py中
+
+测试现象:
+baidu.com对一些超大icmp包不予应答
+baidu.com计算校验和,linux主机则不会
 '''
 
 import os
@@ -17,6 +21,7 @@ import time
 
 from ping_icmp import *
 
+payload = 'h'*4
 
 def is_ip_addr(addr):
     '''判断是否是一个ip地址'''
@@ -41,11 +46,12 @@ class pack_pool(object):
         self.pingstart = time.time()
         self.current_seq = 0
         self.packlist = {}
+        self.pid = os.getpid()
 
     def get_new_pack(self):
         seq = self.current_seq
         self.current_seq += 1
-        pack = icmp_pack(8, seq)
+        pack = icmp_pack(8,self.pid, seq,payload)
         info = pack_info()
         self.packlist[seq] = info
         return pack
@@ -99,6 +105,8 @@ class pack_info(object):
         self.TTL = 0
 
     def get_reply(self):
+        if self.replied:
+            print('got a seq which was already saved by this PING')
         self.replied = True
         self.timeofrecv = time.time()
         self.TTL = self.timeofrecv - self.timeofsend
@@ -109,9 +117,10 @@ def main(argv):
     if len(argv) > 1:
         address = argv[1]
     else:
-        print('help')
+        print('Pls input a domain or ip address')
         sys.exit()
 
+    print('pid:',os.getpid())
     domain = ''
     if not is_ip_addr(address):
         domain = address
@@ -127,12 +136,12 @@ def main(argv):
     s = socket.socket(socket.AF_INET, socket.SOCK_RAW, socket.IPPROTO_ICMP)
     recving = threading.Thread(target=recv, args=(pool, s))
     sending = threading.Thread(target=send, args=(pool, s, address))
-
+    
     sending.start()
     recving.start()
 
     sending.join()
-    recving.join()
+    recving.start()
 
 
 def send(pool, sock, addr):
@@ -144,20 +153,21 @@ def send(pool, sock, addr):
 
 
 def recv(pool, sock):
+    pid = os.getpid()
     while True:
-        pid = os.getpid()
         pack = sock.recvfrom(2048)
         fromip = pack[1][0]
         msg = icmp_unpack(pack[0])
         # 测试type和code是否正确
-        if not (msg['type'] == 0 and msg['code'] == 0):
+        if msg['type'] == 8:
+            continue
+        elif not (msg['type'] == 0 and msg['code'] == 0):
             print('recv icmp pack from', fromip,
                   ', but icmp type or code incorrect!!')
             continue
         # 查看pid是否为本进程
         if msg['id'] != pid:
-            print('recv icmp pack from', fromip,
-                  ', but current icmp is not for this PING!!')
+            print('An icmp recieved is not for this PING!!','recv icmp pack from', fromip)
             continue
         seq = msg['seq']
         data = msg['data']
