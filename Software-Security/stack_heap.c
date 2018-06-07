@@ -14,9 +14,9 @@ void ShowStack() {
     int numb = 4;
     
     printf("FunctinthowStack() stack layout\n");
-    printf("-----inthigh address----------\n");
-    printf("ret aintt\t0x%x%x \t\t%p\n",*(long int *)((char *)&numa+0x10),*(long int *)((char *)&numa+0xc),&numa+0x10);
-    printf("pusheint \t\t0x%x%x \t\t%p\n",*(long int *)((char *)&numa+0x8),*(long int *)((char *)&numa+0x4),&numa+0x8);
+    printf("----------high address----------\n");
+    printf("ret addr\t\t0x%x%x \t%p\n",*(long int *)((char *)&numa+0x10),*(long int *)((char *)&numa+0xc),&numa+0x10);
+    printf("push addr \t\t0x%x%x \t\t%p\n",*(long int *)((char *)&numa+0x8),*(long int *)((char *)&numa+0x4),&numa+0x8);
 
     //如果编译选项中不加-fno-stack-protector,则会出现额外的防溢出机制
     printf("numa \t\t\t%d \t\t\t%p\n",numa,&numa);
@@ -124,6 +124,9 @@ void ShowLargeHeap(){
     printf("\n====================================\nfree heap c\n");
     free(heapc);
     PrintMap(heapc-0x20,heapc+0x20);
+    PrintMap(heapc+MALLOC_SIZE-0x20,heapc+MALLOC_SIZE+0x20);
+    printf("\n====================================\nall\n");
+    PrintMap(heapa-0x20,heapa+0x20);
     PrintMap(heapc+MALLOC_SIZE-0x20,heapc+MALLOC_SIZE+0x20);
 }
 
