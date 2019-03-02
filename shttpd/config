@@ -1,0 +1,7 @@
+[default]
+CGIpath = /home/yahweh/shttpd/www/cgi-bin
+wwwpath = /home/yahweh/shttpd/www
+default = /home/yahweh/shttpd/www/index.html
+TimeOut = 300
+port = 8080 
+MaxClient = 100

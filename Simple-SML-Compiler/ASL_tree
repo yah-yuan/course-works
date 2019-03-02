@@ -1,0 +1,168 @@
+|-- [ASL_root]
+   |-- [Declare]
+      |-- 'val' (type: 'keywords')
+      |-- 'rent' (type: 'variable')
+      |-- '=' (type: 'operator')
+      |-- '1200' (type: 'int')
+   |-- [Declare]
+      |-- 'val' (type: 'keywords')
+      |-- 'string' (type: 'variable')
+      |-- '=' (type: 'operator')
+      |-- '"hey Bob"' (type: 'string')
+   |-- [Declare]
+      |-- 'val' (type: 'keywords')
+      |-- 'phon' (type: 'variable')
+      |-- '=' (type: 'operator')
+      |-- '5551337' (type: 'int')
+      |-- ':' (type: 'operator')
+      |-- 'int' (type: 'variable')
+   |-- [Declare]
+      |-- 'val' (type: 'keywords')
+      |-- 'pi' (type: 'variable')
+      |-- '=' (type: 'operator')
+      |-- '3.14159' (type: 'real')
+   |-- [Declare]
+      |-- 'val' (type: 'keywords')
+      |-- 'e' (type: 'variable')
+      |-- '=' (type: 'operator')
+      |-- '2.718' (type: 'real')
+      |-- ':' (type: 'operator')
+      |-- 'real' (type: 'variable')
+   |-- [Declare]
+      |-- 'val' (type: 'keywords')
+      |-- 'nega' (type: 'variable')
+      |-- '=' (type: 'operator')
+      |-- [Expression]
+         |-- '~' (type: 'operator')
+         |-- '15' (type: 'int')
+   |-- [Declare]
+      |-- 'val' (type: 'keywords')
+      |-- 'y' (type: 'variable')
+      |-- '=' (type: 'operator')
+      |-- [Expression]
+         |-- 'rent' (type: 'int')
+         |-- '+' (type: 'operator')
+         |-- [Expression]
+            |-- '~' (type: 'operator')
+            |-- 'nega' (type: 'int')
+   |-- [Declare]
+      |-- 'val' (type: 'keywords')
+      |-- 'char' (type: 'variable')
+      |-- '=' (type: 'operator')
+      |-- [Expression]
+         |-- '#' (type: 'operator')
+         |-- '"A"' (type: 'string')
+   |-- [Declare]
+      |-- 'val' (type: 'keywords')
+      |-- 'mul' (type: 'variable')
+      |-- '=' (type: 'operator')
+      |-- [Expression]
+         |-- [Expression]
+            |-- 'pi' (type: 'real')
+            |-- '*' (type: 'operator')
+            |-- '0.1' (type: 'real')
+         |-- '+' (type: 'operator')
+         |-- '3.0' (type: 'real')
+   |-- [Declare]
+      |-- 'val' (type: 'keywords')
+      |-- 'side' (type: 'variable')
+      |-- '=' (type: 'operator')
+      |-- [Expression]
+         |-- 'rent' (type: 'int')
+         |-- '*' (type: 'operator')
+         |-- [Expression]
+            |-- '(' (type: 'operator')
+            |-- [Expression]
+               |-- 'phon' (type: 'int')
+               |-- '+' (type: 'operator')
+               |-- 'nega' (type: 'int')
+            |-- ')' (type: 'operator')
+   |-- [Declare]
+      |-- 'val' (type: 'keywords')
+      |-- 'comp' (type: 'variable')
+      |-- '=' (type: 'operator')
+      |-- [Expression]
+         |-- [Compare]
+            |-- '1' (type: 'int')
+            |-- '<' (type: 'operator')
+            |-- '2' (type: 'int')
+         |-- 'andalso' (type: 'operator')
+         |-- [Compare]
+            |-- '2' (type: 'int')
+            |-- '>' (type: 'operator')
+            |-- '0' (type: 'int')
+   |-- [FunDeclare]
+      |-- 'fun' (type: 'keywords')
+      |-- 'fibo' (type: 'variable')
+      |-- 'n' (type: 'variable')
+      |-- '=' (type: 'operator')
+      |-- [Judgment]
+         |-- 'if' (type: 'keywords')
+         |-- [Compare]
+            |-- 'n' (type: None)
+            |-- '=' (type: 'operator')
+            |-- '0' (type: 'int')
+         |-- 'then' (type: 'keywords')
+         |-- '0' (type: 'int')
+         |-- 'else' (type: 'keywords')
+         |-- [Judgment]
+            |-- 'if' (type: 'keywords')
+            |-- [Compare]
+               |-- 'n' (type: 'int')
+               |-- '=' (type: 'operator')
+               |-- '1' (type: 'int')
+            |-- 'then' (type: 'keywords')
+            |-- '1' (type: 'int')
+            |-- 'else' (type: 'keywords')
+            |-- [Expression]
+               |-- [FuncTranse]
+                  |-- 'fibo' (type: 'variable')
+                  |-- '(' (type: 'operator')
+                  |-- [Expression]
+                     |-- 'n' (type: 'int')
+                     |-- '-' (type: 'operator')
+                     |-- '1' (type: 'int')
+                  |-- ')' (type: 'operator')
+               |-- '+' (type: 'operator')
+               |-- [FuncTranse]
+                  |-- 'fibo' (type: 'variable')
+                  |-- '(' (type: 'operator')
+                  |-- [Expression]
+                     |-- 'n' (type: 'int')
+                     |-- '-' (type: 'operator')
+                     |-- '2' (type: 'int')
+                  |-- ')' (type: 'operator')
+   |-- [FunDeclare]
+      |-- 'fun' (type: 'keywords')
+      |-- 'is_large' (type: 'variable')
+      |-- 'x' (type: 'variable')
+      |-- '=' (type: 'operator')
+      |-- [Compare]
+         |-- 'x' (type: None)
+         |-- '>' (type: 'operator')
+         |-- '37' (type: 'int')
+   |-- [FunDeclare]
+      |-- 'fun' (type: 'keywords')
+      |-- 'thermometer' (type: 'variable')
+      |-- 'temp' (type: 'variable')
+      |-- '=' (type: 'operator')
+      |-- [Judgment]
+         |-- 'if' (type: 'keywords')
+         |-- [Compare]
+            |-- 'temp' (type: None)
+            |-- '<' (type: 'operator')
+            |-- '37' (type: 'int')
+         |-- 'then' (type: 'keywords')
+         |-- '"Cold"' (type: 'string')
+         |-- 'else' (type: 'keywords')
+         |-- [Judgment]
+            |-- 'if' (type: 'keywords')
+            |-- [Compare]
+               |-- 'temp' (type: 'string')
+               |-- '>' (type: 'operator')
+               |-- '37' (type: 'int')
+            |-- 'then' (type: 'keywords')
+            |-- '"Warm"' (type: 'string')
+            |-- 'else' (type: 'keywords')
+            |-- '"Normal"' (type: 'string')
+
